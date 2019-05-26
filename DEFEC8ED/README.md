@@ -25,14 +25,14 @@ Finding this flag is fairly simple and can be accomplished many different ways. 
 
 Immediately on opening the file in a hexeditor we can see that we are dealing with a FAT16 Filesystem.
 
-[FAT](img/FAT.png "Identifying the Filesystem")
+![FAT](img/FAT.png "Identifying the Filesystem")
 
 
 010Editor has some very convenient templates in its repository, if not all ready installed, install the Drive.bt template. This can be done by selecting __*Templates->Template Repository*__ this will open a window displaying all available templates. Select _Drive.bt_ from the drive category and then click the install button. Close the repository window and expand the __*Run Template*__ drop down above the raw Hex, select _Drive_ from this menu and 010Editor will automatically run the template on the file.
 
 You can now navigate through the structures in the template output window and see the entire makeup of the filesystem.
 
-[FAT](img/TemplateWindow.png "010Editor Template Window")
+![FAT](img/TemplateWindow.png "010Editor Template Window")
 
 Exploring the __root\_dir__ we can see it contains 4 directories and 1 pdf:
 
