@@ -21,13 +21,16 @@ The fist thing to take note of in this challenge is the Notes.odt file. This fil
 1. Identifies two separate flash chips and that they are damage.     
 
 The indicated damage explains the difference in size between the two files, while the fact that there are multiple chips (with similar layouts) indicates that the filesystem may span both ICs in some fashion.
-![Magic](figure_1.png "Magic Bytes In ChipA.bin and ChipB.bin")
+
+![Magic](img/figure_1.png "Magic Bytes In ChipA.bin and ChipB.bin")
 
 Given the seemingly differently magic at the beginning of both chips it is easy to think that these two ICs operate independently. However, if you scroll down a little further (address 0x400) and look at both files side by side the plane text makes it easer to see how these two ICs may be accessed by the processor.
-![Compar](figure_2.png "More Side by Side Chip Comparisons")
 
-The processor accesses these two ICs as one bank of memory with the high WORD on Chip A and the low WORD on chip B, So the two files need to be interlaced to reveal the filesystem memory in a comprehensive manner. Once we do this the magic starts to make a lot more sense. **Note: This is easier to do if we extend ChipA.bin with 0xFF to the length of ChipB.bin first.**
-![Combined](figure_3.png "ChipA - ChipB Combined view")
+![Compar](img/figure_2.png "More Side by Side Chip Comparisons")
+
+The processor accesses these two ICs as one bank of memory with the high WORD on Chip A and the low WORD on chip B, So the two files need to be interlaced to reveal the filesystem memory in a comprehensive manner. Once we do this the magic starts to make a lot more sense. *__Note:__ This is easier to do if we extend ChipA.bin with 0xFF to the length of ChipB.bin first.*
+
+![Combined](img/figure_3.png "ChipA - ChipB Combined view")
 
  __NURO2FFS__ = Neuro to Flash Filesystem
 
@@ -78,7 +81,7 @@ Applying the template to the file shows us the following:
 
 ## Step 3: Investigating the Spare
 
-![spare](filePart.png "Blocks[3].Page[1].Spare")
+![spare](img/filePart.png "Blocks[3].Page[1].Spare")
 
 Figure 4 shows an example of a page spare from the challenge. If you have run the template noted in Step 2 you can find this spare using the template view and accessing Blocks[3].Page[1].Spare. 
 
@@ -115,7 +118,7 @@ Now that we know how the filesystem is interpreted we can wright a script to reb
 
 Rebuilding the filesystem results in the following files:
 
-![files](files.png "Rebuilt Filesystem Hierarchy")
+![files](img/files.png "Rebuilt Filesystem Hierarchy")
 
 We know we need to retrieve the payload which appears to be _Jimmys-Package.enc_, however this file is encrypted. We are also supposed to gather any information on how Tommy is communicating with his clients and getting his jobs (nudge-nudge-wink-wink this may be where we can find the encryption key). Considering there is a directory called _Jobs_ with a file called _listing.pcaping_ in it, it may be safe to say this might lead to how he is getting his jobs. The _Tools_ folder holds 2 files, a 010Editor Template file for NTP packets, and a second file that by the title seems to be how to extract the job information from the pcap. The only problem is, due to the extended damage to one of the chips there is only a small portion of the _NTP\_covert\_recover.1sc_ file that was recoverable.
 
@@ -169,11 +172,11 @@ Given that the key we have discovered is 32 bytes (numbits = 32 \* 8 = 256) ther
 
 The simplest way to test this is to open GCHQ's ![CyberChef](https://gchq.github.io/CyberChef/). Drag and drop the file into the _Input_ section of the screen, select AES Decrypt from the operations menu and place it in the recipe section. Next copy and paste the key from the message into key box and insure it is set to __LATIN1__ at the end of the key box (we are pasting a ascii string). 
 
-![decrypt](cyberchef.png "Decrypting with CyberChef")
+![decrypt](img/cyberchef.png "Decrypting with CyberChef")
 
 If we then download the decrypted output file from CyberChef and open it in a Hex editor we can see the following:
 
-![flag](flag.png "Jimmys-Package Decrypted")
+![flag](img/flag.png "Jimmys-Package Decrypted")
 
 
 And there you have it __FLAG\{FULL-0N-Z0MB13-M0D3\}__
