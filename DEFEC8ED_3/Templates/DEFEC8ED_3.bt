@@ -1,0 +1,75 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: DEFEC8ED_3.bt
+//   Authors: mrSmiley
+//   Version: 0.0
+//   Purpose: Templates the filesystem
+//  Category: 
+// File Mask: 
+//  ID Bytes: 0x4355524F32464653
+//   History: 
+//------------------------------------------------
+BigEndian();
+typedef struct{
+    BYTE data[512];
+}SECTOR;
+
+typedef struct{
+    BYTE Padd[0x100];
+    DWORD NameLen;
+    if(NameLen >= 0x100){
+        BYTE fill[252];
+    }else{
+        char Name[NameLen+1];
+        BYTE fill[0x100-(NameLen+5)];
+    }
+}TITLE_SECTOR<optimize=false>;
+
+typedef struct{
+    BYTE pad;
+    BYTE subType; //0=dir,1=file,02=file part
+    BYTE file_dir; //1 = data,0xFF = Empty
+    BYTE pad2;
+    DWORD pageNumber;
+    DWORD dataLength;
+    DWORD crc;
+}SPARE_SECA;
+
+typedef struct{
+    DWORD ParentId;
+    DWORD fileID;
+    DWORD partID;
+    DWORD crc;
+}SPARE_SECB;
+
+typedef struct{
+    DWORD data[3];
+    DWORD crc;
+}SPARE_SECCD;
+
+typedef struct{
+    SPARE_SECA spare_A;
+    SPARE_SECB spare_B;
+    SPARE_SECCD spare_C;
+    SPARE_SECCD spare_D;
+}SPARE;
+
+typedef union{
+    SECTOR secA;
+    TITLE_SECTOR TsecA;
+}USECTOR<optimize=false>;
+
+typedef struct{
+    USECTOR UsecA;
+    SECTOR secB;
+    SECTOR secC;
+    SECTOR secD;
+    SPARE spare;
+}PAGE<optimize=false>;
+
+typedef struct{
+    PAGE page[64];
+}BLOCK;
+
+BLOCK blocks[FileSize()/0x21000]<optimize=false>;

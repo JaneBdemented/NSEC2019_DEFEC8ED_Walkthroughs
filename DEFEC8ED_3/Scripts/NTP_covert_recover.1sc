@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Script File
+//
+//      File: NTP_covert_recover.1sc
+//   Authors: mrSmiley
+//   Version: 0.0
+//   Purpose: Recovers Covert NTP msg from NSEC2019 DEFEC8ED_3 challenge
+//  Category: 
+//   History: 
+//------------------------------------------------
+#define ENDSEQ 0xFF
+#define INIT_PATTERN 0x01010101
+#define ACK_PATTERN 0x10101010
+#define SEQ_START 0xAC
+
+
+RunTemplate("NTP.bt");
+
+
+int i = 0;
+unsigned int ntp_svr_ip = 0;
+unsigned int reciver_ip = 0;
+while(exists(ethFrame[i].ntp))
+{
+    if(ethFrame[i].ntp.transmit.fraction == INIT_PATTERN)
+    {
+        ntp_svr_ip = ethFrame[i].ip.ip_src;
+        Printf("NTP Msg Server: %d.%d.%d.%d\n",ntp_svr_ip&0xFF,
+		                                    (ntp_svr_ip&0xFF00)>>8,
+		                                    (ntp_svr_ip&0xFF0000)>>16,
+	                                       	ntp_svr_ip>>24);
+        break;
+    }
+    i++;
+}
+
+while(exists(ethFrame[i].ntp))
+{
+    if(ethFrame[i].ntp.origin.fraction == ACK_PATTERN)
+    {
+        reciver_ip = ethFrame[i].ip.ip_src;
+        Printf("NTP Msg reciver: %d.%d.%d.%d\n",reciver_ip&0xFF,
+		                                    (reciver_ip&0xFF00)>>8,
+		                                    (reciver_ip&0xFF0000)>>16,
+		                                    reciver_ip>>24);
+        break;
+    }
+    i++;
+}
+
+byte start_seq = SEQ_START;
+unsigned int frac = 0;
+Printf("Message: \n");
+while(exists(ethFrame[i].ntp))
+{
+    if((ethFrame[i].ntp.percision == start_seq) && (ethFrame[i].ip.ip_src == ntp_svr_ip))
+    {
+        frac = ethFrame[i].ntp.transmit.fraction;
+        Printf("%c%c%c%c",frac&0xFF,(frac&0xFF00)>>8,(frac&0xFF0000)>>16,frac>>24);
+        start_seq++;
+    }
+    if((ethFrame[i].ntp.percision == (byte) ENDSEQ) && (ethFrame[i].ip.ip_src == ntp_svr_ip)) 
+    {
+        frac = ethFrame[i].ntp.transmit.fraction;
+        Printf("%c%c%c%c",frac&0xFF,(frac&0xFF00)>>8,(frac&0xFF0000)>>16,frac>>24);
+        break;
+    }
+    i++;
+}

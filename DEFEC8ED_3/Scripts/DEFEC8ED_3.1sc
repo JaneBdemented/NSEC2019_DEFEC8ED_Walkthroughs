@@ -1,0 +1,116 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Script File
+//
+//      File: DEFEC8ED_3.1sc
+//   Authors: mrSmiley
+//   Version: 0.0
+//   Purpose: Rebuilds the filesystem from Nsec2019 DEFEC8ED_3 challenge
+//  Category: 
+//   History: 
+//------------------------------------------------
+RunTemplate("DEFEC8ED_3.bt"); 
+
+//adjust the following line to point to your desired rebuild location.
+string BuildLoc = "<path to your directory>/Rebuild/"; 
+
+void buildFile(string Name, int blockarray[], int size, int numPages)
+{
+    int i = 0, startPage = 0, j = 0;
+    int dumpFile = GetFileNum();
+    int newFile = FileNew("Hex");
+    FileSelect(dumpFile);
+    for(i = 0; i < size; i++)
+    {
+        if(blocks[blockarray[i]].page[1].spare.spare_A.subType == 0x01)
+            startPage = 2;
+        else
+            startPage = 1;
+
+        for(j = startPage; j < 64; j++)
+        {
+            if(blocks[blockarray[i]].page[j].spare.spare_A.dataLength == 0xFFFFFFFF)
+                break;
+            SetCursorPos(startof(blocks[blockarray[i]].page[j]));
+            SetSelection(startof(blocks[blockarray[i]].page[j]),
+                        blocks[blockarray[i]].page[j].spare.spare_A.dataLength);
+            CopyToClipboard();
+            FileSelect(newFile);
+            SetCursorPos(FileSize());
+            PasteFromClipboard();
+            SetSelection(FileSize(),0);
+            ClearClipboard();
+            FileSelect(dumpFile);
+            
+        }
+    }
+    FileSelect(newFile);
+    FileSave(Name);
+    FileClose();
+    FileSelect(dumpFile);
+}
+
+void getFileParts(int file_id,int HeadBlock, int totalPages, string FileName)
+{
+    int i = 0, j = 0;
+    int count = 1;
+    int filepartnum[203];
+    int blockNum[203];
+    filepartnum[0] = 0;
+    blockNum[0] = HeadBlock;
+
+    while(exists(blocks[i]))
+    {
+        if(blocks[i].page[1].spare.spare_B.ParentId == file_id)
+        {
+            filepartnum[count] = blocks[i].page[1].spare.spare_B.partID;
+            blockNum[count++] = i;
+        }
+        i++;
+    }
+    //reorder
+    for(i = 0; i < count; i++)
+    {
+        for(j = i; j < count; j++)
+        {
+            if(filepartnum[i] > filepartnum[j])
+            {
+                filepartnum[i] ^= filepartnum[j];
+                filepartnum[j] ^= filepartnum[i];
+                filepartnum[i] ^= filepartnum[j];
+
+                blockNum[i] ^= blockNum[j];
+                blockNum[j] ^= blockNum[i];
+                blockNum[i] ^= blockNum[j];
+            }
+        }
+    }
+    buildFile(FileName, blockNum, count,totalPages);
+}
+
+void BuildDirHirechy(int parentId,string indent,string Location)
+{
+    int i = 0;
+    string name = Location;
+    while(exists(blocks[i]))
+    {
+        if((blocks[i].page[1].spare.spare_B.ParentId == parentId) 
+                && (blocks[i].page[1].spare.spare_A.subType != 0x02))
+        {
+            if(blocks[i].page[1].spare.spare_A.subType == 0)
+            {
+                name = Location+blocks[i].page[1].UsecA.TsecA.Name;
+                MakeDir(name);
+                Printf("Created Dir: %s\n",name);
+                BuildDirHirechy(blocks[i].page[1].spare.spare_B.fileID,"\t",name+"/");
+            }else{
+                getFileParts(blocks[i].page[1].spare.spare_B.fileID,
+                            i, 
+                            blocks[i].page[1].spare.spare_A.dataLength,
+                            Location+blocks[i].page[1].UsecA.TsecA.Name);
+            }
+        }
+        i++;
+    }
+}
+
+BuildDirHirechy(0,"",BuildLoc);
