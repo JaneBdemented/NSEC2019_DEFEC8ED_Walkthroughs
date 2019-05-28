@@ -4,7 +4,7 @@ Our first subject is as follows;
 * __Subject__: John Smith
 * __Age__: 27
 * __Occupation__: None on record.
-* __Installed implant features or upgrades:] None on record.
+* __Installed implant features or upgrades__: None on record.
 * __Background__: Friends and family of John describe him as a fun and outgoing guy, however his ease to anger made it hard for him to hold down a job of any length of time. It was reported that in the last month of his life John has lost his best friend Brent in a climbing accident. John carried Brent’s body back to the hunting cabin where they were staying and remained with his body for 5 days before rangers could evacuate them. This incident had thrown John into a deep depression, he became obsessed with his implant and spent most of his time retreating into his neuro interface.
 * __Known circumstances of death__: Witnesses say subject seemed to _zone out_ like he was re-watching an internal memory, then dropped and began to foam at the mouth. Subject without a pulse when first responders arrived.
 * __Objective__: Find the memory that caused John to retreat, determine and investigate the cause of death.
