@@ -311,7 +311,7 @@ Let's write a quick and dirty application to decrypt the code - copy directly fr
 
 The generate-and-test-key code is wrapped in a `Parallel.ForEach` instantiation, which will attempt to parallelize the operation since this is a very CPU-heavy task. 
 
-After a (few) cups of coffee, the computer beeps, letting us know that the key was found!
+After a (few) cups of coffee, the computer beeps, letting us know that the key was found (key = !NPMcKzL*XDjbe!)!
 
 Plug that key into a quick decryptor function:
 
@@ -319,3 +319,4 @@ Plug that key into a quick decryptor function:
 
 And we can crack open the final RTF file for the final flag! Whew!
 
+![flag](img/flag.png "FLAG")
