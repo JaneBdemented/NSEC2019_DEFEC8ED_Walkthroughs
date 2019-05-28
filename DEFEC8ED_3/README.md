@@ -96,7 +96,7 @@ Figure 4 shows an example of a page spare from the challenge. If you have run th
 * <span style="color:blue">Page Number</span>: The second 4 bytes identifies the current page number with reference to the current block. This value is only populated if the page contains data, and begins at a count of zero. 
 * <span style="color:green">Data Size</span>: Bytes 8 - 11 of the spare. This value differs depending on the <span style="color:red">Type</span>.
 	<table>
-		<tr><th><span style="color:red">Type</span> Value</th><th>__DATA Size Interpretation__</th></tr>
+		<tr><th><span style="color:red">Type</span> Value</th><th>DATA Size Interpretation</th></tr>
 		<tr><td>0xFF0001FF</td><td>Number of pages that compose the entire file. Page count begins at zero.</td></tr>
 		<tr><td>0xFF0101FF</td><td>Number of pages that compose the entire file. Page count begins at zero.</td></tr>
 		<tr><td>0xFF2001FF</td><td>Number of bytes on the current page that belong to the file.</td></tr>
@@ -132,11 +132,11 @@ So we are lucky enough to not have to go a research the exact layout of a typica
 #define SEQ_START 0xAC
 ```
 
-The first place we can find the __INIT\_PATTERN__ in the listings.pcaping file is in the fifth NTP packet. This packet is a NTP server reply from the IP address 142.147.92.5 and the __INIT\_PATTERN__ can be found in the fraction section of the reference, origin, received and transmit timestamps. On further investigation this server seems to continuously transmit this pattern in the fraction section of all its timestamps regardless of the requesting source.  By packet 243 we see can the __ACK\_PATTERN__ coming from the IP address 10.111.97.142 _(this user also has the same vendor ID bytes in their MAC as was seen in the MAC addresses of the previous victims in the DEFEC8ED challenges. So we know the ACK came from a NeuroSoft device)_. 
+The first place we can find the __INIT\_PATTERN__ in the listings.pcapng file is in the fifth NTP packet. This packet is a NTP server reply from the IP address 142.147.92.5 and the __INIT\_PATTERN__ can be found in the fraction section of the reference, origin, received and transmit timestamps. On further investigation this server seems to continuously transmit this pattern in the fraction section of all its timestamps regardless of the requesting source.  By packet 243 we see can the __ACK\_PATTERN__ coming from the IP address 10.111.97.142 _(this user also has the same vendor ID bytes in their MAC as was seen in the MAC addresses of the previous victims in the DEFEC8ED challenges. So we know the ACK came from a NeuroSoft device)_. 
 
-The next pice of information we have is the __SEQ\_START__ define. Given that the NTP server seemed to be continuously advertising the __INIT\_PATTERN__ and it was a NeuroSoft device that acknowledged this pattern, chances are the secrete information is coming from the NTP server. 
+The next piece of information we have is the __SEQ\_START__ define. Given that the NTP server seemed to be continuously advertising the __INIT\_PATTERN__ and it was a NeuroSoft device that acknowledged this pattern, chances are the secrete information is coming from the NTP server. 
 
-if we open the pcap in wireshark and filter using __*ip.src == 142.147.92.5*__ we can limit our view to just the NTP packets coming from the compromised server. Locating the first packet the compromised server sent after reciving the ACK (packet No. > 243) we get packet No. 248. Investigating this packet we can see the server is no longer sending the __INIT\_PATTERN__, however it does have a _Peer Clock Precision_ value that matches the defined _SEQ\_START_ value. In fact if you scroll through the following NTP packets you can see the _Peer Clock Precision_ value increment by 1 with each following response from the server. This continues up to 0xC0 at packet No. 889 and then goes to 0xFF (the defined __ENDSEQ__) at packet No. 907. With this observation we can determine the following:
+if we open the pcap in wireshark and filter using __*ip.src == 142.147.92.5*__ we can limit our view to just the NTP packets coming from the compromised server. Locating the first packet the compromised server sent after reciving the ACK (packet No. > 243) we get packet No. 248. Investigating this packet we can see the server is no longer sending the __INIT\_PATTERN__, however it does have a _Peer Clock Precision_ value that matches the defined __SEQ\_START__ value. In fact if you scroll through the following NTP packets you can see the _Peer Clock Precision_ value increment by 1 with each following response from the server. This continues up to 0xC0 at packet No. 889 and then goes to 0xFF (the defined __ENDSEQ__) at packet No. 907. With this observation we can determine the following:
 
 
 1. Total Packets in message = (0xC0 - 0xAC) + 2 = 0x16 
@@ -148,7 +148,7 @@ if we open the pcap in wireshark and filter using __*ip.src == 142.147.92.5*__ w
 
 Taking a look at the first two NTP packets in the message sequence we can see the following in there timestamps:
 <table>
-	<tr><th>Timestamp Fraction</th><th>Packet No. 248</th><th>Packet No. 262</th></tr>
+	<tr><th>Timestamp Fraction</th><th>Packet No. 248</th><th></th><th>Packet No. 262</th></tr>
 	<tr><td></td><th>Hex</th><th>Ascii</th><th>Hex</th><th>Ascii</th></tr>
 	<tr><th>Reference</th><td>0x4A9D0838</td><td>J..8</td><td>0x4A9D0838</td><td>J..8 </td></tr>
 	<tr><th>Origin</th><td>0x2420E69F</td><td>$.æŸ</td><td>0x25F27999</td><td>%òy™</td></tr>
