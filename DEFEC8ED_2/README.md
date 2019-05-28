@@ -250,7 +250,7 @@ Since this looks like a Windows PE executable, it's time to switch to using Wind
 
 Since `file` identified this as a .NET executable, let's try disassembling it. These screenshots are from ILSpy and DnSpy, either is valid:
 
-![FLAG_1_PRE](img/fig_initial_disasm.png "The First Flag")
+![FLAG_1_PRE](img/fig_initial_disasm.PNG "The First Flag")
 
 That was easy - it looks like it's plain unobfuscated C#. And the code looks a little sloppy - a Windows Form as the base?
 
@@ -261,7 +261,7 @@ It does not take long to discover the _SendPassword()_ function with a little pr
 
 But there are no smoking gun clues left in the rest of the code flow, which looks something like this:
 
-![FLAG_1](img/fig_flow.png "The First Flag")
+![FLAG_1](img/fig_flow.PNG "The First Flag")
 
 
 Let's see if we can find a similar ransomware in the wild. The idea is that maybe this challenge was inspired by an existing one - or at least there is something that will help us out here.
@@ -292,14 +292,14 @@ Let's go back to the log, there was something familiar there:
 Let's assume that that was the last full system boot. Using WolframAlpha to figure out the delta [here](https://www.wolframalpha.com/input/?i=(07:06:32+to+15:01:00)+to+sec):
 
 
-![wolfram](img/fig_wolfram.png "wolframalpha")  	 
+![wolfram](img/fig_wolfram.PNG "wolframalpha")  	 
 
 That's our estimated tick count. 
 
 Now we need a test file to decrypt - we want to keep this as small as possible to test seed values as fast as possible. There is one candidate - `icong1.png.locked` which seems to be a tiny PNG file. Let's check the original file by searching the Internet for the original file. Luckily this is made easy - the file name `Baby Growth and Development Month by Month   What to Expect.htm.locked` is *probably* the original page title, so once we search for that:
 
 
-![baby](img/fig_icong.png "baby development page")  	 
+![baby](img/fig_icong.PNG "baby development page")  	 
 
 The header for `icong1.png` confirms that this is a normal PNG, so we can quickly validate by testing the decrypted result's first eight bytes against the sequence `0x89 0x50 0x4E 0x47 0x0D 0x0A 0x1A 0x0A`.
 
@@ -315,7 +315,7 @@ After a (few) cups of coffee, the computer beeps, letting us know that the key w
 
 Plug that key into a quick decryptor function:
 
-![decryptor](img/fig_decryptall.png "decrypt")  	 
+![decryptor](img/fig_decryptall.PNG "decrypt")  	 
 
 And we can crack open the final RTF file for the final flag! Whew!
 
