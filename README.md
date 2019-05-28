@@ -1,6 +1,6 @@
 ## README
 
-This repo contains the solutions to the Forensics from the Coronors Office challenges from NSEC2019.
+This repo contains the solutions to the Forensics from the Coroner's Office challenges from NSEC2019.
 
 ## Premise
 

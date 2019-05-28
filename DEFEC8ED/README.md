@@ -4,7 +4,7 @@ Our first subject is as follows;
 * __Subject__: John Smith
 * __Age__: 27
 * __Occupation__: None on record.
-* __Installed implant features or upgrades:] None on record.
+* __Installed implant features or upgrades__: None on record.
 * __Background__: Friends and family of John describe him as a fun and outgoing guy, however his ease to anger made it hard for him to hold down a job of any length of time. It was reported that in the last month of his life John has lost his best friend Brent in a climbing accident. John carried Brent’s body back to the hunting cabin where they were staying and remained with his body for 5 days before rangers could evacuate them. This incident had thrown John into a deep depression, he became obsessed with his implant and spent most of his time retreating into his neuro interface.
 * __Known circumstances of death__: Witnesses say subject seemed to _zone out_ like he was re-watching an internal memory, then dropped and began to foam at the mouth. Subject without a pulse when first responders arrived.
 * __Objective__: Find the memory that caused John to retreat, determine and investigate the cause of death.
@@ -25,14 +25,14 @@ Finding this flag is fairly simple and can be accomplished many different ways. 
 
 Immediately on opening the file in a hexeditor we can see that we are dealing with a FAT16 Filesystem.
 
-[FAT](img/FAT.png "Identifying the Filesystem")
+![FAT](img/FAT.png "Identifying the Filesystem")
 
 
 010Editor has some very convenient templates in its repository, if not all ready installed, install the Drive.bt template. This can be done by selecting __*Templates->Template Repository*__ this will open a window displaying all available templates. Select _Drive.bt_ from the drive category and then click the install button. Close the repository window and expand the __*Run Template*__ drop down above the raw Hex, select _Drive_ from this menu and 010Editor will automatically run the template on the file.
 
 You can now navigate through the structures in the template output window and see the entire makeup of the filesystem.
 
-[FAT](img/TemplateWindow.png "010Editor Template Window")
+![FAT](img/TemplateWindow.png "010Editor Template Window")
 
 Exploring the __root\_dir__ we can see it contains 4 directories and 1 pdf:
 
