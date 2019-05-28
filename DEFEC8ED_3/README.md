@@ -75,7 +75,7 @@ Applying the template to the file shows us the following:
 * The size of the dump is equivalent to 160 blocks.
 * Every block begins with the magic 0x4355524F32464653 or **NURO2FFS**
 * The first page of every block (_Page[0]_) contains only the magic bytes, all other bytes are 0xFF.
-* The spare of Page[0] in every block is identical, and appears to be broken into four 16 byte sections. Given that the 2nd,3rd and 4th sections end in identical numbers while only the first section is unique. A possible assumption can be made here that; each section of the page is allotted a 16 byte spare. Furthermore, as sections 2, 3 and 4 are identical and only the first section differs by containing the block magic, and the last four bytes of each spare section are identical with the exception of the first. The last four bytes may represent a checksum. 
+* The spare of Page[0] in every block is identical, and appears to be broken into four 16 byte sections. Given that the 2nd, 3rd and 4th sections end in identical numbers while only the first section is unique. A possible assumption can be made here that; each section of the page is allotted a 16 byte spare. Furthermore, as sections 2, 3 and 4 are identical and only the first section differs by containing the block magic, and the last four bytes of each spare section are identical with the exception of the first. The last four bytes may represent a checksum. 
 * Some blocks seem to contain data, some contain nothing but 0xFF, and some only contain information on the second page the remainder of the block is filled with 0xFF. The First for bytes of the spare in the pages of these blocks seem very interesting.
 
 
@@ -97,8 +97,8 @@ Figure 4 shows an example of a page spare from the challenge. If you have run th
 * <span style="color:green">Data Size</span>: Bytes 8 - 11 of the spare. This value differs depending on the <span style="color:red">Type</span>.
 	<table>
 		<tr><th><span style="color:red">Type</span> Value</th><th>__DATA Size Interpretation__</th></tr>
-		<tr><td>0xFF0001FF</td><td>Number of pages the compose the entire file. Page count begins at zero.</td></tr>
-		<tr><td>0xFF0101FF</td><td>Number of pages the compose the entire file. Page count begins at zero.</td></tr>
+		<tr><td>0xFF0001FF</td><td>Number of pages that compose the entire file. Page count begins at zero.</td></tr>
+		<tr><td>0xFF0101FF</td><td>Number of pages that compose the entire file. Page count begins at zero.</td></tr>
 		<tr><td>0xFF2001FF</td><td>Number of bytes on the current page that belong to the file.</td></tr>
 	</table>
     
