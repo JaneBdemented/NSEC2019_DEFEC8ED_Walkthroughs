@@ -305,6 +305,10 @@ The header for `icong1.png` confirms that this is a normal PNG, so we can quickl
 
 Let's write a quick and dirty application to decrypt the code - copy directly from the disassembled view, swap the encrypt operation to decrypt, and test a five minute window. Full source is available in this repo.
 
+
+(hi future recruiters, this is not representative of my actual dev skills, I had to get this done in under 2 hours from end to end.)
+
+
 The generate-and-test-key code is wrapped in a `Parallel.ForEach` instantiation, which will attempt to parallelize the operation since this is a very CPU-heavy task. 
 
 After a (few) cups of coffee, the computer beeps, letting us know that the key was found!
